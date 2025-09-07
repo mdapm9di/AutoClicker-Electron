@@ -163,5 +163,10 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
   }
 });
 
+document.getElementById('githubButton').addEventListener('click', function() {
+    // Замените URL на актуальный репозиторий вашего проекта
+    require('electron').shell.openExternal('https://github.com/mdapm9di/auto-clicker-electron');
+});
+
 updateSettings();
 ipcRenderer.send('register-hotkey', settings.hotkey);

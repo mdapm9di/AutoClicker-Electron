@@ -64,13 +64,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 32px; /* Увеличиваем ширину */
+    height: 32px; /* Увеличиваем высоту */
     border-radius: var(--border-radius);
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
     text-decoration: none;
     transition: all 0.3s ease;
+    border: none; /* Добавляем для кнопки */
+    cursor: pointer; /* Добавляем для кнопки */
+    padding: 0; /* Убираем внутренние отступы */
 }
 
 .github-button:hover {
@@ -80,8 +83,8 @@ body {
 }
 
 .github-button svg {
-    width: 16px;
-    height: 16px;
+    width: 20px; /* Увеличиваем размер иконки */
+    height: 20px; /* Увеличиваем размер иконки */
 }
 
 .content {
