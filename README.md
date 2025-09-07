@@ -1,3 +1,5 @@
+## auto-clicker (electron)
+
 A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, and hotkey support.
 
 ## Features
