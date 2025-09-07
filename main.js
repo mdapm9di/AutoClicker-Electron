@@ -9,14 +9,12 @@ let clickInterval = null;
 let currentLanguage = 'en';
 let translations = {};
 
-// Загрузка переводов
 function loadTranslations(lang) {
   try {
     const data = fs.readFileSync(path.join(__dirname, 'locales', `${lang}.json`));
     translations = JSON.parse(data);
   } catch (error) {
     console.error('Error loading translations:', error);
-    // Fallback to English if translation file is missing
     const enData = fs.readFileSync(path.join(__dirname, './locales', 'en.json'));
     translations = JSON.parse(enData);
   }
@@ -36,7 +34,7 @@ let clickSettings = {
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 450,
-    height: 530, // Increased height for language selector
+    height: 530,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -55,15 +53,11 @@ function createMainWindow() {
 
   mainWindow.loadFile('index.html');
 
-  // Показать окно когда оно готово
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-    // Send current language to renderer
     mainWindow.webContents.send('language-changed', currentLanguage, translations);
   });
 
-  // Открываем DevTools в разработке (закомментируйте в продакшене)
-  // mainWindow.webContents.openDevTools();
 }
 
 function createSelectionWindow() {
@@ -89,14 +83,12 @@ function createSelectionWindow() {
   
   selectionWindow.once('ready-to-show', () => {
     selectionWindow.show();
-    // Send current language to selection window
     selectionWindow.webContents.send('language-changed', currentLanguage, translations);
   });
   
   return selectionWindow;
 }
 
-// Load translations on app start
 app.whenReady().then(() => {
   loadTranslations(currentLanguage);
   createMainWindow();
@@ -114,12 +106,10 @@ app.on('window-all-closed', () => {
   }
 });
 
-// Обработка сообщений от интерфейса
 ipcMain.on('update-settings', (event, newSettings) => {
   clickSettings = { ...clickSettings, ...newSettings };
   console.log('Settings updated:', clickSettings);
   
-  // Перезапускаем кликер если он активен
   if (clickInterval !== null) {
     clearInterval(clickInterval);
     clickInterval = null;
@@ -138,7 +128,6 @@ ipcMain.on('toggle-clicker', (event, enabled) => {
     stopClicker();
   }
   
-  // Отправляем подтверждение обратно в интерфейс
   mainWindow.webContents.send('clicker-toggled', enabled);
 });
 
@@ -155,10 +144,8 @@ ipcMain.on('position-selected', (event, x, y) => {
   clickSettings.customX = x;
   clickSettings.customY = y;
   
-  // Отправляем обновленные координаты в интерфейс
   mainWindow.webContents.send('position-updated', x, y);
   
-  // Обновляем настройки
   mainWindow.webContents.send('update-settings', clickSettings);
 });
 
@@ -195,12 +182,10 @@ ipcMain.on('register-hotkey', (event, hotkey) => {
   }
 });
 
-// Language change handler
 ipcMain.on('change-language', (event, lang) => {
   currentLanguage = lang;
   loadTranslations(lang);
   
-  // Send new language to all windows
   BrowserWindow.getAllWindows().forEach(window => {
     window.webContents.send('language-changed', currentLanguage, translations);
   });
@@ -232,12 +217,10 @@ function startClicker() {
     if (clickSettings.clickType === 'single') {
       robot.mouseClick(clickSettings.button);
     } else if (clickSettings.clickType === 'double') {
-      // Быстрый двойной клик
       robot.mouseClick(clickSettings.button);
-      // Минимальная задержка между кликами
       setTimeout(() => {
         robot.mouseClick(clickSettings.button);
-      }, 10); // Задержка 20ms для быстрого двойного клика
+      }, 10);
     }
   }, clickSettings.interval);
 }
@@ -249,7 +232,6 @@ function stopClicker() {
   }
 }
 
-// Очистка при выходе
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   stopClicker();

@@ -1,6 +1,5 @@
 const { ipcRenderer } = require('electron');
 
-// Элементы интерфейса
 const hotkeyInput = document.getElementById('hotkey');
 const hoursInput = document.getElementById('hours');
 const minutesInput = document.getElementById('minutes');
@@ -27,7 +26,6 @@ let settings = {
   enabled: false
 };
 
-// Обработчики событий
 hotkeyInput.addEventListener('click', () => {
   hotkeyInput.placeholder = 'Press any key...';
   const handleKeyPress = (e) => {
@@ -38,7 +36,6 @@ hotkeyInput.addEventListener('click', () => {
     if (e.shiftKey) key = `Shift+${key}`;
     if (e.altKey) key = `Alt+${key}`;
     
-    // Игнорируем специальные клавиши без основного символа
     if (['CONTROL', 'SHIFT', 'ALT', 'META', 'CAPSLOCK', 'TAB'].includes(key.toUpperCase())) {
       return;
     }
@@ -47,7 +44,6 @@ hotkeyInput.addEventListener('click', () => {
     hotkeyInput.placeholder = '';
     settings.hotkey = key;
     
-    // Регистрируем новую горячую клавишу
     ipcRenderer.send('register-hotkey', key);
     
     window.removeEventListener('keydown', handleKeyPress);
@@ -56,17 +52,14 @@ hotkeyInput.addEventListener('click', () => {
   window.addEventListener('keydown', handleKeyPress);
 });
 
-// Обработчик изменения типа позиции
 modeSelect.addEventListener('change', () => {
   updateSettings();
 });
 
-// Обработчик кнопки выбора позиции
 selectPositionBtn.addEventListener('click', () => {
   ipcRenderer.send('start-position-selection');
 });
 
-// Обработка изменений настроек
 [hoursInput, minutesInput, secondsInput, millisecondsInput, buttonSelect, 
  clickTypeSelect, modeSelect].forEach(element => {
   element.addEventListener('change', updateSettings);
@@ -84,12 +77,10 @@ toggleBtn.addEventListener('click', () => {
   ipcRenderer.send('toggle-clicker', isEnabled);
 });
 
-// Language change handler
 languageSelect.addEventListener('change', (e) => {
   ipcRenderer.send('change-language', e.target.value);
 });
 
-// Обновление настроек
 function updateSettings() {
   const hours = parseInt(hoursInput.value) || 0;
   const minutes = parseInt(minutesInput.value) || 0;
@@ -99,7 +90,7 @@ function updateSettings() {
   const totalMs = (hours * 3600000) + (minutes * 60000) + 
                  (seconds * 1000) + milliseconds;
   
-  settings.interval = totalMs > 0 ? totalMs : 1000; // Минимальный интервал 1 секунда
+  settings.interval = totalMs > 0 ? totalMs : 1000;
   settings.button = buttonSelect.value;
   settings.clickType = clickTypeSelect.value;
   settings.mode = modeSelect.value;
@@ -120,20 +111,17 @@ function updateToggleButton() {
     statusDiv.classList.add('disabled');
   }
   
-  // Update text if translations are available
   if (window.translations) {
     toggleBtn.textContent = isEnabled ? window.translations.disable : window.translations.enable;
     statusDiv.textContent = isEnabled ? window.translations.enabled : window.translations.disabled;
   }
 }
 
-// Слушаем сообщения от главного процесса
 ipcRenderer.on('clicker-toggled', (event, enabled) => {
   isEnabled = enabled;
   updateToggleButton();
 });
 
-// Обработчик обновления позиции
 ipcRenderer.on('position-updated', (event, x, y) => {
   settings.customX = x;
   settings.customY = y;
@@ -141,15 +129,11 @@ ipcRenderer.on('position-updated', (event, x, y) => {
   updateSettings();
 });
 
-// Language change handler
 ipcRenderer.on('language-changed', (event, lang, translations) => {
-  // Store translations globally
   window.translations = translations;
   
-  // Update language selector
   languageSelect.value = lang;
   
-  // Update all elements with data-i18n attribute
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     if (translations[key]) {
@@ -157,7 +141,6 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
     }
   });
   
-  // Update options in selects
   document.querySelectorAll('option[data-i18n]').forEach(option => {
     const key = option.getAttribute('data-i18n');
     if (translations[key]) {
@@ -165,10 +148,8 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
     }
   });
   
-  // Update toggle button and status
   updateToggleButton();
   
-  // Update coordinates display if needed
   if (modeSelect.value === 'current_position') {
     coordinatesDisplay.setAttribute('data-i18n', 'not_used');
     if (translations.not_used) {
@@ -182,7 +163,5 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
   }
 });
 
-// Инициализация
 updateSettings();
-// Регистрируем горячую клавишу по умолчанию
 ipcRenderer.send('register-hotkey', settings.hotkey);

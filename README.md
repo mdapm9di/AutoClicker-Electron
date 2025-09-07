@@ -67,3 +67,4 @@ If you encounter issues with robotjs (the module that handles mouse actions), yo
 - Windows: Visual Studio Build Tools with C++ support
 - macOS: Xcode Command Line Tools
 - Linux: Python, make, GCC, and other build essentials
+
