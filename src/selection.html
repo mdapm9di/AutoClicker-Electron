@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles/selection.css">
+</head>
+<body>
+    <div class="instruction">
+        <span data-i18n="instruction">Move cursor to desired position and click left mouse button</span>
+        <br>
+        <button class="cancel-btn" id="cancelBtn" data-i18n="cancel">Cancel</button>
+    </div>
+
+    <div class="coordinates" id="coordinates">X: 0, Y: 0</div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        // Обновление координат при движении мыши
+        document.addEventListener('mousemove', (e) => {
+            document.getElementById('coordinates').textContent = `X: ${e.screenX}, Y: ${e.screenY}`;
+        });
+        
+        document.addEventListener('click', (e) => {
+            // Получаем координаты клика
+            const x = e.screenX;
+            const y = e.screenY;
+            
+            // Отправляем координаты в главный процесс
+            ipcRenderer.send('position-selected', x, y);
+        });
+        
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            ipcRenderer.send('cancel-position-selection');
+        });
+        
+        // Language change handler
+        ipcRenderer.on('language-changed', (event, lang, translations) => {
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[key]) {
+                    element.textContent = translations[key];
+                }
+            });
+        });
+    </script>
+</body>
+</html>

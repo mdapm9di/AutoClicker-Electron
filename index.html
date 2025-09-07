@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>auto-clicker (electron) 1.0.0</title>
+    <link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+    <div class="container"> 
+        <div class="content">
+            <div class="language-selector">
+                <select id="languageSelect">
+                    <option value="en">ENG</option>
+                    <option value="ru">RUS</option>
+                </select>
+            </div>
+
+            <div class="divider"></div> <!-- Добавлен разделитель -->
+
+            <div class="form-group">
+                <label for="hotkey" data-i18n="hotkey">Hotkey:</label>
+                <input type="text" id="hotkey" placeholder="Press any key..." readonly value="F6">
+            </div>
+            
+            <div class="divider"></div> <!-- Добавлен разделитель -->
+
+            <div class="form-group">
+                <label data-i18n="click_interval">Click interval:</label>
+                <div class="interval-inputs">
+                    <div class="interval-input">
+                        <label for="hours" data-i18n="hours">Hours</label>
+                        <input type="number" id="hours" min="0" title="Hours" value="0">
+                    </div>
+                    <div class="interval-input">
+                        <label for="minutes" data-i18n="minutes">Minutes</label>
+                        <input type="number" id="minutes" min="0" title="Minutes" value="0">
+                    </div>
+                    <div class="interval-input">
+                        <label for="seconds" data-i18n="seconds">Seconds</label>
+                        <input type="number" id="seconds" min="0" title="Seconds" value="1">
+                    </div>
+                    <div class="interval-input">
+                        <label for="milliseconds" data-i18n="milliseconds">Milliseconds</label>
+                        <input type="number" id="milliseconds" min="0" title="Milliseconds" value="0">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div> <!-- Добавлен разделитель -->
+
+            <div class="dropdowns-row">
+                <div class="form-group compact-select">
+                    <label for="button" data-i18n="mouse_button">Mouse button:</label>
+                    <select id="button">
+                        <option value="left" data-i18n="left">Left</option>
+                        <option value="right" data-i18n="right">Right</option>
+                        <option value="middle" data-i18n="middle">Middle</option>
+                    </select>
+                </div>
+                
+                <div class="form-group compact-select">
+                    <label for="clickType" data-i18n="click_type">Click type:</label>
+                    <select id="clickType">
+                        <option value="single" data-i18n="single">Single</option>
+                        <option value="double" data-i18n="double">Double</option>
+                    </select>
+                </div>
+
+                <div class="form-group compact-select">
+                    <label for="mode" data-i18n="position_type">Position type:</label>
+                    <select id="mode">
+                        <option value="current_position" data-i18n="current">Current</option>
+                        <option value="custom_location" data-i18n="custom">Custom</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="divider"></div> <!-- Добавлен разделитель -->
+
+            <div class="position-row compact" id="positionRow">
+                <div class="form-group">
+                    <button id="selectPositionBtn" data-i18n="select_position">Select position</button>
+                </div>
+                <div class="form-group">
+                    <div class="coordinates-display" id="coordinatesDisplay" data-i18n="not_used">
+                        Not used
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div> <!-- Добавлен разделитель -->
+
+            <button id="toggleBtn" class="toggle-btn" data-i18n="enable">Enable</button>
+            
+            <div id="status" class="status disabled" data-i18n="disabled">Disabled</div>
+        </div>
+    </div>
+
+    <script>
+        // Обработка отображения блока выбора позиции
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeSelect = document.getElementById('mode');
+            const positionRow = document.getElementById('positionRow');
+            const coordinatesDisplay = document.getElementById('coordinatesDisplay');
+            const selectPositionBtn = document.getElementById('selectPositionBtn');
+            
+            function updatePositionVisibility() {
+                if (modeSelect.value === 'custom_location') {
+                    positionRow.classList.remove('compact');
+                    selectPositionBtn.disabled = false;
+                    if (coordinatesDisplay.textContent === 'Not used' || coordinatesDisplay.textContent === 'Не используется') {
+                        coordinatesDisplay.setAttribute('data-i18n', 'coordinates_not_selected');
+                    }
+                } else {
+                    positionRow.classList.add('compact');
+                    selectPositionBtn.disabled = true;
+                    coordinatesDisplay.setAttribute('data-i18n', 'not_used');
+                }
+            }
+            
+            // Инициализация и обработчик изменений
+            updatePositionVisibility();
+            modeSelect.addEventListener('change', updatePositionVisibility);
+        });
+    </script>
+    <script src="src/js/renderer.js"></script>
+</body>
+</html>
