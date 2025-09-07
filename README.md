@@ -1,4 +1,4 @@
-## auto-clicker (electron)
+## auto-clicker-electron
 A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, and hotkey support.
 
 ## Features
@@ -67,4 +67,5 @@ If you encounter issues with robotjs (the module that handles mouse actions), yo
 - Windows: Visual Studio Build Tools with C++ support
 - macOS: Xcode Command Line Tools
 - Linux: Python, make, GCC, and other build essentials
+
 
