@@ -1,5 +1,5 @@
 {
-  "name": "auto-clicker",
+  "name": "auto-clicker-electron",
   "version": "1.0.0",
   "description": "Auto-clicker application built with Electron",
   "main": "main.js",
@@ -11,7 +11,7 @@
     "build-linux": "electron-builder --linux"
   },
   "keywords": [
-    "auto-clicker",
+    "auto-clicker-electron",
     "electron"
   ],
   "author": "mdapm9di",
@@ -24,7 +24,7 @@
     "robotjs": "^0.6.0"
   },
   "build": {
-    "productName": "auto-clicker",
+    "productName": "auto-clicker-electron",
     "directories": {
       "output": "dist"
     },

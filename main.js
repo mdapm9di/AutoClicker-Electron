@@ -39,7 +39,7 @@ function createMainWindow() {
       nodeIntegration: true,
       contextIsolation: false
     },
-    title: 'auto-clicker (electron) 1.0.0',
+    title: 'auto-clicker-electron',
     icon: path.join(__dirname, 'assets/icon.png'),
     alwaysOnTop: true,
     resizable: false,
