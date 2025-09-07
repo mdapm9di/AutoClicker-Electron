@@ -1,7 +1,7 @@
 ## auto-clicker (electron)
 A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, and hotkey support.
 
-![Appearance of the application](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot)
+![Appearance of the application](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot.jpg)
 
 ## Features
 - Customizable hotkey support (F6 by default)
@@ -69,5 +69,6 @@ If you encounter issues with robotjs (the module that handles mouse actions), yo
 - Windows: Visual Studio Build Tools with C++ support
 - macOS: Xcode Command Line Tools
 - Linux: Python, make, GCC, and other build essentials
+
 
 
