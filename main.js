@@ -3,24 +3,17 @@ const path = require('path');
 const robot = require('robotjs');
 const fs = require('fs');
 
+app.commandLine.appendSwitch('disable-http-cache');
+app.commandLine.appendSwitch('disable-gpu-shader-disk-cache');
+
 let mainWindow;
 let selectionWindow;
 let clickInterval = null;
 let currentLanguage = 'en';
 let translations = {};
 
-function loadTranslations(lang) {
-  try {
-    const data = fs.readFileSync(path.join(__dirname, 'locales', `${lang}.json`));
-    translations = JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading translations:', error);
-    const enData = fs.readFileSync(path.join(__dirname, './locales', 'en.json'));
-    translations = JSON.parse(enData);
-  }
-}
-
-let clickSettings = {
+const defaultSettings = {
+  language: 'en',
   hotkey: 'F6',
   interval: 1000,
   button: 'left',
@@ -31,6 +24,113 @@ let clickSettings = {
   enabled: false
 };
 
+let clickSettings = { ...defaultSettings };
+
+function loadSettings() {
+  try {
+    const dataDir = path.join(app.getPath('userData'), 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const filePath = path.join(dataDir, 'config.json');
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf8');
+      const savedSettings = JSON.parse(data);
+      
+      return { ...defaultSettings, ...savedSettings };
+    }
+  } catch (error) {
+    console.error('Error loading settings:', error);
+  }
+  return { ...defaultSettings };
+}
+
+function saveSettings(settings) {
+  try {
+    const dataDir = path.join(app.getPath('userData'), 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const filePath = path.join(dataDir, 'config.json');
+    
+    const settingsToSave = { ...settings };
+    delete settingsToSave.enabled;
+    
+    fs.writeFileSync(filePath, JSON.stringify(settingsToSave, null, 2));
+    console.log('Settings saved to:', filePath);
+  } catch (error) {
+    console.error('Error saving settings:', error);
+  }
+}
+
+function loadTranslations(lang) {
+  try {
+    let translationsPath;
+    
+    if (app.isPackaged) {
+      const possiblePaths = [
+        path.join(process.resourcesPath, 'locales', `${lang}.json`),
+        path.join(process.resourcesPath, '..', 'locales', `${lang}.json`),
+        path.join(process.resourcesPath, 'app', 'locales', `${lang}.json`),
+        path.join(__dirname, 'locales', `${lang}.json`),
+        path.join(__dirname, '..', 'locales', `${lang}.json`)
+      ];
+      
+      for (const possiblePath of possiblePaths) {
+        if (fs.existsSync(possiblePath)) {
+          translationsPath = possiblePath;
+          break;
+        }
+      }
+      
+      if (!translationsPath) {
+        throw new Error(`Translation file for ${lang} not found`);
+      }
+    } else {
+      translationsPath = path.join(__dirname, 'locales', `${lang}.json`);
+    }
+    
+    const data = fs.readFileSync(translationsPath);
+    translations = JSON.parse(data);
+  } catch (error) {
+    console.error('Error loading translations:', error);
+    try {
+      let enPath;
+      
+      if (app.isPackaged) {
+        const possiblePaths = [
+          path.join(process.resourcesPath, 'locales', 'en.json'),
+          path.join(process.resourcesPath, '..', 'locales', 'en.json'),
+          path.join(process.resourcesPath, 'app', 'locales', 'en.json'),
+          path.join(__dirname, 'locales', 'en.json'),
+          path.join(__dirname, '..', 'locales', 'en.json')
+        ];
+        
+        for (const possiblePath of possiblePaths) {
+          if (fs.existsSync(possiblePath)) {
+            enPath = possiblePath;
+            break;
+          }
+        }
+      } else {
+        enPath = path.join(__dirname, 'locales', 'en.json');
+      }
+      
+      if (enPath && fs.existsSync(enPath)) {
+        const enData = fs.readFileSync(enPath);
+        translations = JSON.parse(enData);
+      } else {
+        throw new Error('English translation file not found');
+      }
+    } catch (e) {
+      console.error('Error loading English translations:', e);
+      translations = {};
+    }
+  }
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 450,
@@ -40,7 +140,7 @@ function createMainWindow() {
       contextIsolation: false
     },
     title: 'auto-clicker-electron',
-    icon: path.join(__dirname, 'assets/icon.png'),
+    icon: path.join(__dirname, 'assets', 'icon.png'),
     alwaysOnTop: true,
     resizable: false,
     minimizable: true,
@@ -51,13 +151,44 @@ function createMainWindow() {
     autoHideMenuBar: true
   });
 
-  mainWindow.loadFile('index.html');
+  if (app.isPackaged) {
+    const possiblePaths = [
+      path.join(process.resourcesPath, 'index.html'),
+      path.join(process.resourcesPath, '..', 'index.html'),
+      path.join(process.resourcesPath, 'app', 'index.html'),
+      path.join(__dirname, 'index.html'),
+      path.join(__dirname, '..', 'index.html')
+    ];
+    
+    let htmlPath;
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath)) {
+        htmlPath = possiblePath;
+        break;
+      }
+    }
+    
+    if (htmlPath) {
+      mainWindow.loadFile(htmlPath);
+    } else {
+      console.error('Index.html not found in any of the expected locations');
+      mainWindow.loadURL(`data:text/html;charset=utf-8,
+        <html><body>
+          <h1>Error</h1>
+          <p>Application files not found. Please reinstall the application.</p>
+        </body></html>
+      `);
+    }
+  } else {
+    mainWindow.loadFile('index.html');
+  }
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-    mainWindow.webContents.send('language-changed', currentLanguage, translations);
+    
+    mainWindow.webContents.send('settings-loaded', clickSettings);
+    mainWindow.webContents.send('language-changed', clickSettings.language, translations);
   });
-
 }
 
 function createSelectionWindow() {
@@ -78,7 +209,38 @@ function createSelectionWindow() {
     }
   });
   
-  selectionWindow.loadFile('src/selection.html');
+  if (app.isPackaged) {
+    const possiblePaths = [
+      path.join(process.resourcesPath, 'src', 'selection.html'),
+      path.join(process.resourcesPath, '..', 'src', 'selection.html'),
+      path.join(process.resourcesPath, 'app', 'src', 'selection.html'),
+      path.join(__dirname, 'src', 'selection.html'),
+      path.join(__dirname, '..', 'src', 'selection.html')
+    ];
+    
+    let htmlPath;
+    for (const possiblePath of possiblePaths) {
+      if (fs.existsSync(possiblePath)) {
+        htmlPath = possiblePath;
+        break;
+      }
+    }
+    
+    if (htmlPath) {
+      selectionWindow.loadFile(htmlPath);
+    } else {
+      console.error('Selection.html not found in any of the expected locations');
+      selectionWindow.loadURL(`data:text/html;charset=utf-8,
+        <html><body>
+          <h1>Error</h1>
+          <p>Selection screen files not found. Please reinstall the application.</p>
+        </body></html>
+      `);
+    }
+  } else {
+    selectionWindow.loadFile('src/selection.html');
+  }
+  
   selectionWindow.setIgnoreMouseEvents(false);
   
   selectionWindow.once('ready-to-show', () => {
@@ -90,6 +252,8 @@ function createSelectionWindow() {
 }
 
 app.whenReady().then(() => {
+  clickSettings = loadSettings();
+  currentLanguage = clickSettings.language;
   loadTranslations(currentLanguage);
   createMainWindow();
   
@@ -109,6 +273,8 @@ app.on('window-all-closed', () => {
 ipcMain.on('update-settings', (event, newSettings) => {
   clickSettings = { ...clickSettings, ...newSettings };
   console.log('Settings updated:', clickSettings);
+  
+  saveSettings(clickSettings);
   
   if (clickInterval !== null) {
     clearInterval(clickInterval);
@@ -146,6 +312,7 @@ ipcMain.on('position-selected', (event, x, y) => {
   
   mainWindow.webContents.send('position-updated', x, y);
   
+  saveSettings(clickSettings);
   mainWindow.webContents.send('update-settings', clickSettings);
 });
 
@@ -184,11 +351,18 @@ ipcMain.on('register-hotkey', (event, hotkey) => {
 
 ipcMain.on('change-language', (event, lang) => {
   currentLanguage = lang;
+  clickSettings.language = lang;
+  
+  saveSettings(clickSettings);
   loadTranslations(lang);
   
   BrowserWindow.getAllWindows().forEach(window => {
     window.webContents.send('language-changed', currentLanguage, translations);
   });
+});
+
+ipcMain.on('get-initial-settings', (event) => {
+  event.reply('settings-loaded', clickSettings);
 });
 
 function startClicker() {

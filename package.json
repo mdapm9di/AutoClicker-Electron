@@ -1,6 +1,6 @@
 {
   "name": "auto-clicker-electron",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Auto-clicker application built with Electron",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "electron-builder",
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
-    "build-linux": "electron-builder --linux"
+    "build-linux": "electron-builder --linux",
+    "postinstall": "electron-rebuild"
   },
   "keywords": [
     "auto-clicker-electron",
@@ -18,7 +19,8 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^38.0.0",
-    "electron-builder": "^26.0.0"
+    "electron-builder": "^26.0.0",
+    "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
     "robotjs": "^0.6.0"
@@ -40,11 +42,18 @@
       "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
-      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+      "locales/**/*",
+      "src/**/*",
+      "assets/**/*",
+      "index.html",
+      "main.js",
+      "package.json"
     ],
     "win": {
       "target": "nsis",
-      "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico",
+      "asar": true
     },
     "mac": {
       "target": "dmg",
@@ -53,11 +62,17 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist"
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "asar": true
     },
     "linux": {
       "target": "AppImage",
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "asar": true
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
