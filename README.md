@@ -1,5 +1,7 @@
 # auto-clicker-electron
 A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, hotkey support, and theme switching.
+
+![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot.jpg)
 ## Features
 - Customizable hotkey support (F6 by default)
 - Configurable click intervals (hours, minutes, seconds, milliseconds)
@@ -109,3 +111,4 @@ MIT License - see LICENSE file for details
 - Basic auto-clicker functionality
 - Multi-language interface
 - Hotkey support
+
