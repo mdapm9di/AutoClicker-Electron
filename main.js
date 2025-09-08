@@ -9,6 +9,65 @@ let clickInterval = null;
 let currentLanguage = 'en';
 let translations = {};
 
+// Настройки по умолчанию
+const defaultSettings = {
+  language: 'en',
+  hotkey: 'F6',
+  interval: 1000,
+  button: 'left',
+  clickType: 'single',
+  mode: 'current_position',
+  customX: 0,
+  customY: 0,
+  enabled: false
+};
+
+let clickSettings = { ...defaultSettings };
+
+// Функция для загрузки сохраненных настроек
+function loadSettings() {
+  try {
+    // Создаем папку data, если она не существует
+    const dataDir = path.join(__dirname, 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const filePath = path.join(dataDir, 'config.json');
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf8');
+      const savedSettings = JSON.parse(data);
+      
+      // Объединяем сохраненные настройки с настройками по умолчанию
+      return { ...defaultSettings, ...savedSettings };
+    }
+  } catch (error) {
+    console.error('Error loading settings:', error);
+  }
+  return { ...defaultSettings }; // возвращаем настройки по умолчанию
+}
+
+// Функция для сохранения настроек
+function saveSettings(settings) {
+  try {
+    // Создаем папку data, если она не существует
+    const dataDir = path.join(__dirname, 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    
+    const filePath = path.join(dataDir, 'config.json');
+    
+    // Создаем копию настроек без поля enabled
+    const settingsToSave = { ...settings };
+    delete settingsToSave.enabled; // не сохраняем состояние включено/выключено
+    
+    fs.writeFileSync(filePath, JSON.stringify(settingsToSave, null, 2));
+  } catch (error) {
+    console.error('Error saving settings:', error);
+  }
+}
+
 function loadTranslations(lang) {
   try {
     const data = fs.readFileSync(path.join(__dirname, 'locales', `${lang}.json`));
@@ -19,17 +78,6 @@ function loadTranslations(lang) {
     translations = JSON.parse(enData);
   }
 }
-
-let clickSettings = {
-  hotkey: 'F6',
-  interval: 1000,
-  button: 'left',
-  clickType: 'single',
-  mode: 'current_position',
-  customX: 0,
-  customY: 0,
-  enabled: false
-};
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -55,9 +103,11 @@ function createMainWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
-    mainWindow.webContents.send('language-changed', currentLanguage, translations);
+    
+    // Отправляем начальные настройки в рендерер
+    mainWindow.webContents.send('settings-loaded', clickSettings);
+    mainWindow.webContents.send('language-changed', clickSettings.language, translations);
   });
-
 }
 
 function createSelectionWindow() {
@@ -90,6 +140,9 @@ function createSelectionWindow() {
 }
 
 app.whenReady().then(() => {
+  // Загружаем сохраненные настройки при запуске
+  clickSettings = loadSettings();
+  currentLanguage = clickSettings.language;
   loadTranslations(currentLanguage);
   createMainWindow();
   
@@ -109,6 +162,9 @@ app.on('window-all-closed', () => {
 ipcMain.on('update-settings', (event, newSettings) => {
   clickSettings = { ...clickSettings, ...newSettings };
   console.log('Settings updated:', clickSettings);
+  
+  // Сохраняем настройки при изменении
+  saveSettings(clickSettings);
   
   if (clickInterval !== null) {
     clearInterval(clickInterval);
@@ -146,6 +202,8 @@ ipcMain.on('position-selected', (event, x, y) => {
   
   mainWindow.webContents.send('position-updated', x, y);
   
+  // Сохраняем настройки после выбора позиции
+  saveSettings(clickSettings);
   mainWindow.webContents.send('update-settings', clickSettings);
 });
 
@@ -184,11 +242,19 @@ ipcMain.on('register-hotkey', (event, hotkey) => {
 
 ipcMain.on('change-language', (event, lang) => {
   currentLanguage = lang;
+  clickSettings.language = lang;
+  
+  // Сохраняем настройки при изменении языка
+  saveSettings(clickSettings);
   loadTranslations(lang);
   
   BrowserWindow.getAllWindows().forEach(window => {
     window.webContents.send('language-changed', currentLanguage, translations);
   });
+});
+
+ipcMain.on('get-initial-settings', (event) => {
+  event.reply('settings-loaded', clickSettings);
 });
 
 function startClicker() {
