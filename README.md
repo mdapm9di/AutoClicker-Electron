@@ -2,6 +2,8 @@
 Auto-clicker with advanced settings, built on Electron. Supports multiple click modes, custom intervals, theme switching and multilingual interface.
 
 ![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot.jpg)
+## Appeal to all
+
 ## Features
 - Customizable hotkey (default F6)
 - Customizable click interval (hours, minutes, seconds, milliseconds)
@@ -12,7 +14,7 @@ Auto-clicker with advanced settings, built on Electron. Supports multiple click 
 - Multilingual support (English and Russian)
 - Visual position selection tool
 - Save settings
-- 🖥Cross-platform (Windows, macOS, Linux)
+- Cross-platform (Windows, macOS, Linux)
 ## Installation
 ### Prerequisites
 - Node.js (version 14 or higher recommended)
