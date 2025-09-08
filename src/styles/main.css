@@ -35,11 +35,6 @@ body {
   flex-direction: column;
 }
 
-.top-bar {
-    display: flex;
-    align-items: center;
-}
-
 .language-selector {
   z-index: 1000;
 }
@@ -52,39 +47,11 @@ body {
   height: auto;
   width: auto;
   cursor: pointer;
-  margin-right: 12px;
 }
 
 .language-selector select:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
-}
-
-.github-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px; /* Увеличиваем ширину */
-    height: 32px; /* Увеличиваем высоту */
-    border-radius: var(--border-radius);
-    background-color: var(--bg-tertiary);
-    color: var(--text-primary);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: none; /* Добавляем для кнопки */
-    cursor: pointer; /* Добавляем для кнопки */
-    padding: 0; /* Убираем внутренние отступы */
-}
-
-.github-button:hover {
-    background-color: var(--accent-primary);
-    color: var(--bg-primary);
-    transform: scale(1.05);
-}
-
-.github-button svg {
-    width: 20px; /* Увеличиваем размер иконки */
-    height: 20px; /* Увеличиваем размер иконки */
 }
 
 .content {

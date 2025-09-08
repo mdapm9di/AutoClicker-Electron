@@ -13,7 +13,6 @@ const coordinatesDisplay = document.getElementById('coordinatesDisplay');
 const toggleBtn = document.getElementById('toggleBtn');
 const statusDiv = document.getElementById('status');
 const languageSelect = document.getElementById('languageSelect');
-const positionRow = document.getElementById('positionRow');
 
 let isEnabled = false;
 let settings = {
@@ -46,7 +45,6 @@ hotkeyInput.addEventListener('click', () => {
     settings.hotkey = key;
     
     ipcRenderer.send('register-hotkey', key);
-    ipcRenderer.send('update-settings', settings);
     
     window.removeEventListener('keydown', handleKeyPress);
   };
@@ -56,7 +54,6 @@ hotkeyInput.addEventListener('click', () => {
 
 modeSelect.addEventListener('change', () => {
   updateSettings();
-  updatePositionVisibility();
 });
 
 selectPositionBtn.addEventListener('click', () => {
@@ -120,26 +117,6 @@ function updateToggleButton() {
   }
 }
 
-function updatePositionVisibility() {
-  if (modeSelect.value === 'custom_location') {
-    positionRow.classList.remove('compact');
-    selectPositionBtn.disabled = false;
-    if (coordinatesDisplay.textContent === 'Not used' || coordinatesDisplay.textContent === 'Не используется') {
-      coordinatesDisplay.setAttribute('data-i18n', 'coordinates_not_selected');
-      if (window.translations && window.translations.coordinates_not_selected) {
-        coordinatesDisplay.textContent = window.translations.coordinates_not_selected;
-      }
-    }
-  } else {
-    positionRow.classList.add('compact');
-    selectPositionBtn.disabled = true;
-    coordinatesDisplay.setAttribute('data-i18n', 'not_used');
-    if (window.translations && window.translations.not_used) {
-      coordinatesDisplay.textContent = window.translations.not_used;
-    }
-  }
-}
-
 ipcRenderer.on('clicker-toggled', (event, enabled) => {
   isEnabled = enabled;
   updateToggleButton();
@@ -172,51 +149,19 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
   });
   
   updateToggleButton();
-  updatePositionVisibility();
-});
-
-ipcRenderer.on('settings-loaded', (event, savedSettings) => {
-  // Обновляем настройки из сохраненного файла
-  settings = { ...settings, ...savedSettings };
   
-  // Устанавливаем значения полей ввода
-  hotkeyInput.value = settings.hotkey;
-  
-  // Преобразуем интервал в часы, минуты, секунды и миллисекунды
-  const totalMs = settings.interval;
-  const hours = Math.floor(totalMs / 3600000);
-  const minutes = Math.floor((totalMs % 3600000) / 60000);
-  const seconds = Math.floor((totalMs % 60000) / 1000);
-  const milliseconds = totalMs % 1000;
-  
-  hoursInput.value = hours;
-  minutesInput.value = minutes;
-  secondsInput.value = seconds;
-  millisecondsInput.value = milliseconds;
-  
-  buttonSelect.value = settings.button;
-  clickTypeSelect.value = settings.clickType;
-  modeSelect.value = settings.mode;
-  languageSelect.value = settings.language;
-  
-  // Обновляем отображение координат
-  if (settings.mode === 'custom_location' && settings.customX !== 0 && settings.customY !== 0) {
-    coordinatesDisplay.textContent = `X: ${settings.customX}, Y: ${settings.customY}`;
+  if (modeSelect.value === 'current_position') {
+    coordinatesDisplay.setAttribute('data-i18n', 'not_used');
+    if (translations.not_used) {
+      coordinatesDisplay.textContent = translations.not_used;
+    }
+  } else if (coordinatesDisplay.textContent === 'Not used' || coordinatesDisplay.textContent === 'Не используется') {
+    coordinatesDisplay.setAttribute('data-i18n', 'coordinates_not_selected');
+    if (translations.coordinates_not_selected) {
+      coordinatesDisplay.textContent = translations.coordinates_not_selected;
+    }
   }
-  
-  // Обновляем видимость элементов позиции
-  updatePositionVisibility();
-  
-  // Регистрируем горячую клавишу
-  ipcRenderer.send('register-hotkey', settings.hotkey);
 });
 
-document.getElementById('githubButton').addEventListener('click', function() {
-  require('electron').shell.openExternal('https://github.com/mdapm9di/auto-clicker-electron');
-});
-
-// Инициализируем видимость позиции при загрузке
-updatePositionVisibility();
-
-// Запрашиваем начальные настройки
-ipcRenderer.send('get-initial-settings');
+updateSettings();
+ipcRenderer.send('register-hotkey', settings.hotkey);
