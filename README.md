@@ -1,17 +1,17 @@
 # auto-clicker-electron
-A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, hotkey support, and multi-language interface.
-
-![Appearance of the application](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot.jpg)
+A customizable auto-clicker application built with Electron, featuring multiple click modes, configurable intervals, hotkey support, and theme switching.
 ## Features
 - Customizable hotkey support (F6 by default)
 - Configurable click intervals (hours, minutes, seconds, milliseconds)
 - Multiple mouse button support (left, right, middle)
 - Different click types (single, double)
 - Position modes (current cursor position or custom coordinates)
+- Theme switching (light/dark mode)
 - Multi-language support (English and Russian)
 - Visual position selection tool
 - Persistent settings storage
 - Cross-platform compatibility (Windows, macOS, Linux)
+
 ## Installation
 ### Prerequisites
 - Node.js (v14 or higher recommended)
@@ -52,8 +52,9 @@ Built applications will be available in the `dist` folder.
 5. **Set Position Mode**:
    - "Current": Clicks at the current cursor position
    - "Custom": Allows selecting a specific screen coordinate
-6. **Select Language**: Use the dropdown in the top-right to switch between English and Russian
-7. **Enable/Disable**: Toggle the auto-clicker with the button or your configured hotkey
+6. **Toggle Theme**: Use the theme button to switch between light and dark modes
+7. **Select Language**: Use the dropdown to switch between English and Russian
+8. **Enable/Disable**: Toggle the auto-clicker with the button or your configured hotkey
 ## Project Structure
 ```
 ├── main.js              # Main Electron process
@@ -91,19 +92,13 @@ The application automatically saves your settings to a config.json file in the u
 - Check the console for error messages if the application behaves unexpectedly
 ## License
 MIT License - see LICENSE file for details
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-## Support
-If you encounter any issues or have questions:
-1. Check the troubleshooting section above
-2. Search for existing issues on GitHub
-3. Create a new issue with details about your problem
 ## Changelog
+### v1.0.2
+- Added theme switching (light/dark mode)
+- Improved settings persistence with debouncing
+- Updated to @jitsi/robotjs for better compatibility
+- Enhanced UI with theme-aware styling
+- Better error handling and file path resolution
 ### v1.0.1
 - Added settings persistence
 - Improved error handling
@@ -114,4 +109,3 @@ If you encounter any issues or have questions:
 - Basic auto-clicker functionality
 - Multi-language interface
 - Hotkey support
-
