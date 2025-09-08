@@ -105,22 +105,26 @@ The application automatically saves your settings to the config.json file in the
 ## License
 MIT License - see LICENSE file for details
 ## Changelog
-### v1.0.3
+### v 1.0.3
+**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.3
 - Code refactoring: split into modules for better maintainability
 - Improved settings and translations management
 - Optimized window creation and management
-### v1.0.2
+### v 1.0.2
+**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.2
 - Added theme switching (light/dark)
 - Improved settings saving with debounce
 - Updated to @jitsi/robotjs for better compatibility
 - Improved theme-aware UI
 - Improved error handling and file path resolution
-### v1.0.1
+### v 1.0.1
+**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.1
 - Added settings saving
 - Improved error handling
 - Improved multilingual support
 - Various bug fixes
-### v1.0.0
+### v 1.0.0
+**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.0
 - Initial release
 - Core functionality autoclicker
 - Multilingual interface
