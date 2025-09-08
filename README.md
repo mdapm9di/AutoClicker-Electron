@@ -69,8 +69,7 @@ Built applications will be available in the `dist` folder.
 │       ├── main.css     # Main window styles
 │       └── selection.css # Selection overlay styles
 ├── locales/             # Translation files (en.json, ru.json)
-├── assets/              # Application icons
-└── data/                # Settings storage (created automatically)
+└── assets/              # Application icons
 ```
 ## Settings Persistence
 The application automatically saves your settings to a config.json file in the user data directory:
@@ -111,4 +110,5 @@ MIT License - see LICENSE file for details
 - Basic auto-clicker functionality
 - Multi-language interface
 - Hotkey support
+
 
