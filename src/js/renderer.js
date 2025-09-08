@@ -14,9 +14,14 @@ const toggleBtn = document.getElementById('toggleBtn');
 const statusDiv = document.getElementById('status');
 const languageSelect = document.getElementById('languageSelect');
 const positionRow = document.getElementById('positionRow');
+const themeButton = document.getElementById('themeButton');
+const themeIcon = document.getElementById('themeIcon');
 
 let isEnabled = false;
+let currentTheme = 'dark';
 let settings = {
+  language: 'en',
+  theme: 'dark',
   hotkey: 'F6',
   interval: 1000,
   button: 'left',
@@ -26,6 +31,8 @@ let settings = {
   customY: 0,
   enabled: false
 };
+
+document.documentElement.setAttribute('data-theme', currentTheme);
 
 hotkeyInput.addEventListener('click', () => {
   hotkeyInput.placeholder = 'Press any key...';
@@ -70,6 +77,7 @@ selectPositionBtn.addEventListener('click', () => {
 
 [hoursInput, minutesInput, secondsInput, millisecondsInput].forEach(input => {
   input.addEventListener('input', updateSettings);
+  input.addEventListener('blur', updateSettings);
 });
 
 toggleBtn.addEventListener('click', () => {
@@ -81,7 +89,25 @@ toggleBtn.addEventListener('click', () => {
 });
 
 languageSelect.addEventListener('change', (e) => {
+  settings.language = e.target.value;
+  updateSettings();
   ipcRenderer.send('change-language', e.target.value);
+});
+
+languageSelect.addEventListener('blur', (e) => {
+  ipcRenderer.send('change-language', e.target.value);
+});
+
+themeButton.addEventListener('click', () => {
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  currentTheme = newTheme;
+  settings.theme = newTheme;
+  
+  updateThemeIcon();
+  document.documentElement.setAttribute('data-theme', newTheme);
+  
+  ipcRenderer.send('change-theme', newTheme);
+  ipcRenderer.send('update-settings', settings);
 });
 
 function updateSettings() {
@@ -140,6 +166,14 @@ function updatePositionVisibility() {
   }
 }
 
+function updateThemeIcon() {
+  if (currentTheme === 'dark') {
+    themeIcon.innerHTML = '<path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>';
+  } else {
+    themeIcon.innerHTML = '<path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>';
+  }
+}
+
 ipcRenderer.on('clicker-toggled', (event, enabled) => {
   isEnabled = enabled;
   updateToggleButton();
@@ -175,8 +209,15 @@ ipcRenderer.on('language-changed', (event, lang, translations) => {
   updatePositionVisibility();
 });
 
+ipcRenderer.on('theme-changed', (event, theme) => {
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeIcon();
+});
+
 ipcRenderer.on('settings-loaded', (event, savedSettings) => {
   settings = { ...settings, ...savedSettings };
+  currentTheme = settings.theme;
   
   hotkeyInput.value = settings.hotkey;
   
@@ -201,6 +242,8 @@ ipcRenderer.on('settings-loaded', (event, savedSettings) => {
   }
   
   updatePositionVisibility();
+  updateThemeIcon();
+  document.documentElement.setAttribute('data-theme', currentTheme);
   
   ipcRenderer.send('register-hotkey', settings.hotkey);
 });

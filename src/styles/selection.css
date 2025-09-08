@@ -1,9 +1,27 @@
+:root {
+  --text-color: #ffffff;
+  --bg-color: rgba(30, 30, 30, 0.8);
+  --button-bg: white;
+  --button-text-color: black;
+  --button-hover: #e0e0e0;
+}
+
+:root[data-theme="light"] {
+  --text-color: rgba(30, 30, 30, 1);
+  --bg-color: rgba(245, 245, 245, 0.8);
+  --button-bg: black;
+  --button-text-color: white;
+  --button-hover: #333333;
+}
+
 body {
   margin: 0;
   padding: 0;
   cursor: crosshair;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  transition: color 0.3s ease;
 }
 
 .instruction {
@@ -11,18 +29,20 @@ body {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(30, 30, 30, 0.8);
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 15px 25px;
   border-radius: 20px;
   text-align: center;
+  backdrop-filter: blur(10px);
 }
+
 
 .cancel-btn {
   margin-top: 12px;
   padding: 8px 16px;
-  background: rgba(30, 30, 30, 1);;
-  color: white;
+  background: var(--button-bg);
+  color: var(--button-text-color);
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -30,8 +50,13 @@ body {
   transition: all 0.3s ease;
 }
 
+[data-theme="dark"] .cancel-btn:hover {
+    color: var(--button-text-color) !important;
+}
+
 .cancel-btn:hover {
-  background: var(--accent-primary);
+  background: var(--button-hover);
+  color: white;
   transform: translateY(-1px);
 }
 
@@ -39,9 +64,10 @@ body {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  background-color: rgba(30, 30, 30, 0.8);
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 10px 15px;
   border-radius: 15px;
   font-family: monospace;
+  backdrop-filter: blur(10px);
 }

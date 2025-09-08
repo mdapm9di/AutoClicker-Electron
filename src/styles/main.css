@@ -14,6 +14,20 @@
   --border-radius-small: 5px;
 }
 
+:root[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e0e0e0;
+  --accent-primary: #000000;
+  --accent-secondary: #000000;
+  --text-primary: #333333;
+  --text-secondary: #333333;
+  --text-label: #666666;
+  --success: #4caf50;
+  --warning: #ff9800;
+  --error: #f44336;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -24,6 +38,8 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -38,6 +54,7 @@ body {
 .top-bar {
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
 .language-selector {
@@ -52,39 +69,39 @@ body {
   height: auto;
   width: auto;
   cursor: pointer;
-  margin-right: 12px;
+  border: 1px solid var(--bg-tertiary);
 }
 
 .language-selector select:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
-.github-button {
+.theme-button, .github-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px; /* Увеличиваем ширину */
-    height: 32px; /* Увеличиваем высоту */
+    width: 32px;
+    height: 32px;
     border-radius: var(--border-radius);
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
     text-decoration: none;
     transition: all 0.3s ease;
-    border: none; /* Добавляем для кнопки */
-    cursor: pointer; /* Добавляем для кнопки */
-    padding: 0; /* Убираем внутренние отступы */
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
 
-.github-button:hover {
+.theme-button:hover, .github-button:hover {
     background-color: var(--accent-primary);
     color: var(--bg-primary);
     transform: scale(1.05);
 }
 
-.github-button svg {
-    width: 20px; /* Увеличиваем размер иконки */
-    height: 20px; /* Увеличиваем размер иконки */
+.theme-button svg, .github-button svg {
+    width: 16px;
+    height: 16px;
 }
 
 .content {
@@ -122,7 +139,7 @@ input, select {
 
 input:focus, select:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.2);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
 }
 
 input[type="number"] {
@@ -147,7 +164,7 @@ button {
 }
 
 button:hover {
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 button:active {
@@ -208,7 +225,7 @@ button:active {
 .position-row.compact .coordinates-display {
   text-align: center;
   font-style: italic;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px dashed rgba(0, 0, 0, 0.2);
 }
 
 .section-title {
@@ -245,7 +262,6 @@ button:active {
   background-color: var(--bg-tertiary);
   border-radius: var(--border-radius);
   text-align: center;
-  font-family: monospace;
   font-size: 12px;
   border: 1px dashed var(--accent-primary);
   display: flex;
@@ -256,8 +272,9 @@ button:active {
 
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
   margin: 12px 0;
+  opacity: 0.3;
 }
 
 .compact-select {

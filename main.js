@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
-const robot = require('robotjs');
+const robot = require('@jitsi/robotjs');
 const fs = require('fs');
 
 app.commandLine.appendSwitch('disable-http-cache');
@@ -10,10 +10,12 @@ let mainWindow;
 let selectionWindow;
 let clickInterval = null;
 let currentLanguage = 'en';
+let currentTheme = 'dark';
 let translations = {};
 
 const defaultSettings = {
   language: 'en',
+  theme: 'dark',
   hotkey: 'F6',
   interval: 1000,
   button: 'left',
@@ -25,6 +27,7 @@ const defaultSettings = {
 };
 
 let clickSettings = { ...defaultSettings };
+let saveTimeout = null;
 
 function loadSettings() {
   try {
@@ -48,6 +51,33 @@ function loadSettings() {
 
 function saveSettings(settings) {
   try {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      try {
+        const dataDir = path.join(app.getPath('userData'), 'data');
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+        
+        const filePath = path.join(dataDir, 'config.json');
+        
+        const settingsToSave = { ...settings };
+        delete settingsToSave.enabled;
+        
+        fs.writeFileSync(filePath, JSON.stringify(settingsToSave, null, 2));
+        console.log('Settings saved to:', filePath);
+      } catch (error) {
+        console.error('Error saving settings:', error);
+      }
+    }, 500);
+  } catch (error) {
+    console.error('Error setting save timeout:', error);
+  }
+}
+
+function saveSettingsImmediately(settings) {
+  try {
+    clearTimeout(saveTimeout);
     const dataDir = path.join(app.getPath('userData'), 'data');
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
@@ -59,9 +89,9 @@ function saveSettings(settings) {
     delete settingsToSave.enabled;
     
     fs.writeFileSync(filePath, JSON.stringify(settingsToSave, null, 2));
-    console.log('Settings saved to:', filePath);
+    console.log('Settings immediately saved to:', filePath);
   } catch (error) {
-    console.error('Error saving settings:', error);
+    console.error('Error immediately saving settings:', error);
   }
 }
 
@@ -146,7 +176,7 @@ function createMainWindow() {
     minimizable: true,
     maximizable: false,
     fullscreenable: false,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: currentTheme === 'dark' ? '#1a1a1a' : '#ffffff',
     show: false,
     autoHideMenuBar: true
   });
@@ -188,6 +218,7 @@ function createMainWindow() {
     
     mainWindow.webContents.send('settings-loaded', clickSettings);
     mainWindow.webContents.send('language-changed', clickSettings.language, translations);
+    mainWindow.webContents.send('theme-changed', clickSettings.theme);
   });
 }
 
@@ -246,6 +277,7 @@ function createSelectionWindow() {
   selectionWindow.once('ready-to-show', () => {
     selectionWindow.show();
     selectionWindow.webContents.send('language-changed', currentLanguage, translations);
+    selectionWindow.webContents.send('theme-changed', currentTheme);
   });
   
   return selectionWindow;
@@ -254,6 +286,7 @@ function createSelectionWindow() {
 app.whenReady().then(() => {
   clickSettings = loadSettings();
   currentLanguage = clickSettings.language;
+  currentTheme = clickSettings.theme;
   loadTranslations(currentLanguage);
   createMainWindow();
   
@@ -295,6 +328,7 @@ ipcMain.on('toggle-clicker', (event, enabled) => {
   }
   
   mainWindow.webContents.send('clicker-toggled', enabled);
+  saveSettings(clickSettings);
 });
 
 ipcMain.on('start-position-selection', () => {
@@ -337,6 +371,7 @@ ipcMain.on('register-hotkey', (event, hotkey) => {
       }
       
       mainWindow.webContents.send('clicker-toggled', clickSettings.enabled);
+      saveSettings(clickSettings);
     });
     
     if (registered) {
@@ -353,11 +388,23 @@ ipcMain.on('change-language', (event, lang) => {
   currentLanguage = lang;
   clickSettings.language = lang;
   
-  saveSettings(clickSettings);
+  saveSettingsImmediately(clickSettings);
+  
   loadTranslations(lang);
   
   BrowserWindow.getAllWindows().forEach(window => {
     window.webContents.send('language-changed', currentLanguage, translations);
+  });
+});
+
+ipcMain.on('change-theme', (event, theme) => {
+  currentTheme = theme;
+  clickSettings.theme = theme;
+  
+  saveSettings(clickSettings);
+  
+  BrowserWindow.getAllWindows().forEach(window => {
+    window.webContents.send('theme-changed', currentTheme);
   });
 });
 
@@ -409,4 +456,5 @@ function stopClicker() {
 app.on('will-quit', () => {
   globalShortcut.unregisterAll();
   stopClicker();
+  clearTimeout(saveTimeout);
 });

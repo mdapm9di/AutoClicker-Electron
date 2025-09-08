@@ -39,6 +39,10 @@
                 }
             });
         });
+
+        ipcRenderer.on('theme-changed', (event, theme) => {
+            document.documentElement.setAttribute('data-theme', theme);
+        });
     </script>
 </body>
 </html>
