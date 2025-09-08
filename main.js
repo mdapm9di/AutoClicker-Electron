@@ -164,7 +164,7 @@ function loadTranslations(lang) {
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 450,
-    height: 530,
+    height: 525,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
