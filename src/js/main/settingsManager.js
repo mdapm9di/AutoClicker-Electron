@@ -14,7 +14,7 @@ class SettingsManager {
       customX: 0,
       customY: 0,
       repeatOption: 'until_stopped',
-      repeatDuration: 60, // Новое поле: длительность в секундах
+      repeatDuration: 60,
       times: 1,
       enabled: false
     };

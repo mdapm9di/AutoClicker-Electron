@@ -15,7 +15,7 @@ class MainWindow {
       customX: 0,
       customY: 0,
       repeatOption: 'until_stopped',
-      repeatDuration: 60, // Новое поле
+      repeatDuration: 60,
       times: 1,
       enabled: false
     };
@@ -45,7 +45,7 @@ class MainWindow {
       themeIcon: document.getElementById('themeIcon'),
       githubButton: document.getElementById('githubButton'),
       repeatOptionSelect: document.getElementById('repeatOption'),
-      repeatDurationInput: document.getElementById('repeatDuration'), // Новый элемент
+      repeatDurationInput: document.getElementById('repeatDuration'),
       timesDisplay: document.getElementById('timesDisplay'),
       timesDisplayContainer: document.querySelector('.times-display-container')
     };
@@ -53,7 +53,6 @@ class MainWindow {
 
   async loadInitialSettings() {
     try {
-      // Загружаем настройки и переводы при инициализации
       this.settings = await ipcRenderer.invoke('get-settings');
       const translations = await ipcRenderer.invoke('get-translations', this.settings.language);
       this.updateTranslations(this.settings.language, translations);
@@ -90,7 +89,7 @@ class MainWindow {
         this.elements.clickTypeSelect,
         this.elements.modeSelect,
         this.elements.repeatOptionSelect,
-        this.elements.repeatDurationInput // Новый элемент
+        this.elements.repeatDurationInput
       ].forEach(element => {
         element.addEventListener(eventType, () => this.updateSettings());
       });
@@ -101,7 +100,6 @@ class MainWindow {
     this.elements.themeButton.addEventListener('click', () => this.toggleTheme());
     this.elements.githubButton.addEventListener('click', () => this.openGitHub());
     
-    // IPC events
     ipcRenderer.on('clicker-toggled', (event, enabled) => {
         this.isEnabled = enabled;
         this.updateToggleButton(enabled);
@@ -156,7 +154,7 @@ class MainWindow {
     this.settings.clickType = this.elements.clickTypeSelect.value;
     this.settings.mode = this.elements.modeSelect.value;
     this.settings.repeatOption = this.elements.repeatOptionSelect.value;
-    this.settings.repeatDuration = parseInt(this.elements.repeatDurationInput.value) || 60; // Новое поле
+    this.settings.repeatDuration = parseInt(this.elements.repeatDurationInput.value) || 60;
     this.settings.times = 1;
     
     ipcRenderer.send('update-settings', this.settings);
@@ -214,15 +212,12 @@ class MainWindow {
   updatePositionVisibility() {
     const isCustomPosition = this.elements.modeSelect.value === 'custom_location';
     
-    // Обновляем состояние кнопки выбора позиции
     this.elements.selectPositionBtn.disabled = !isCustomPosition;
     
-    // Обновляем отображение координат
     if (isCustomPosition) {
       const currentCoords = this.elements.coordinatesDisplay.textContent;
       if (currentCoords !== 'Not used' && currentCoords !== 'Не используется' && 
           currentCoords !== 'Coordinates not selected' && currentCoords !== 'Координаты не выбраны') {
-        // Если координаты уже установлены, не меняем их
         return;
       }
       this.elements.coordinatesDisplay.setAttribute('data-i18n', 'coordinates_not_selected');
@@ -278,14 +273,12 @@ class MainWindow {
     
     this.elements.languageSelect.value = lang;
     
-    // Сохраняем текущие координаты перед обновлением переводов
     const currentCoords = this.elements.coordinatesDisplay.textContent;
     const hasCustomCoords = currentCoords !== 'Not used' && 
                            currentCoords !== 'Не используется' && 
                            currentCoords !== 'Coordinates not selected' && 
                            currentCoords !== 'Координаты не выбраны';
     
-    // Сохраняем текущее значение Duration
     const currentDuration = this.elements.repeatDurationInput.value;
     const hasCustomDuration = currentDuration !== '60' && currentDuration !== 'Not used' && 
                              currentDuration !== 'Не используется';
@@ -304,12 +297,10 @@ class MainWindow {
       }
     });
     
-    // Восстанавливаем координаты если они были установлены
     if (hasCustomCoords) {
       this.elements.coordinatesDisplay.textContent = currentCoords;
     }
     
-    // Восстанавливаем значение Duration если оно было установлено
     if (hasCustomDuration) {
       this.elements.repeatDurationInput.value = currentDuration;
     } else if (this.elements.repeatOptionSelect.value !== 'repeat_for_time') {
@@ -343,7 +334,7 @@ class MainWindow {
     this.elements.modeSelect.value = this.settings.mode;
     this.elements.languageSelect.value = this.settings.language;
     this.elements.repeatOptionSelect.value = this.settings.repeatOption || 'until_stopped';
-    this.elements.repeatDurationInput.value = this.settings.repeatDuration || 60; // Новое поле
+    this.elements.repeatDurationInput.value = this.settings.repeatDuration || 60;
     
     if (this.settings.mode === 'custom_location' && this.settings.customX !== 0 && this.settings.customY !== 0) {
       this.elements.coordinatesDisplay.textContent = `X: ${this.settings.customX}, Y: ${this.settings.customY}`;
@@ -358,7 +349,6 @@ class MainWindow {
   }
 }
 
-// Initialize the main window when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new MainWindow();
 });

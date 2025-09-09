@@ -37,7 +37,6 @@ class ClickerManager {
       }
     }, settings.interval);
 
-    // Добавляем таймер для автоматической остановки
     if (settings.repeatOption === 'repeat_for_time') {
       this.stopTimer = setTimeout(() => {
         this.stop();

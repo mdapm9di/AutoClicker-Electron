@@ -51,7 +51,6 @@ class WindowManager {
       }
     });
     
-    // Исправленный путь - убрали src/ из пути
     const htmlPath = this.findHtmlPath('../selection.html');
     selectionWindow.loadFile(htmlPath);
     
@@ -85,7 +84,6 @@ class WindowManager {
       console.error(`${filename} not found in any of the expected locations`);
       return this.createErrorWindow('Application files not found. Please reinstall the application.');
     } else {
-      // В режиме разработки используем прямой путь к файлу
       return path.join(__dirname, '..', '..', filename);
     }
   }

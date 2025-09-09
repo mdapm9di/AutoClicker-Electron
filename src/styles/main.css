@@ -346,7 +346,6 @@ button:disabled {
   padding: 4px 8px;
 }
 
-/* Новые стили для трехколоночного макета */
 .options-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -381,7 +380,6 @@ button:disabled {
   flex-direction: column;
 }
 
-/* Стили для адаптивности */
 @media (max-width: 600px) {
   .options-container {
     grid-template-columns: 1fr;

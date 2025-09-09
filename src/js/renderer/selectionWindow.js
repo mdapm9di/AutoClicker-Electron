@@ -16,8 +16,7 @@ class SelectionWindow {
 
   async loadInitialTranslations() {
     try {
-      // Загружаем переводы при инициализации
-      const lang = 'en'; // По умолчанию, можно получить из главного процесса при необходимости
+      const lang = 'en';
       const translations = await ipcRenderer.invoke('get-translations', lang);
       this.updateTranslations(translations);
     } catch (error) {
@@ -41,13 +40,11 @@ class SelectionWindow {
       ipcRenderer.send('cancel-position-selection');
     });
     
-    // IPC events
     ipcRenderer.on('language-changed', (event, lang, translations) => this.updateTranslations(translations));
     ipcRenderer.on('theme-changed', (event, theme) => this.applyTheme(theme));
   }
 
   updateTranslations(translations) {
-    // Сохраняем текущие координаты перед обновлением переводов
     const currentCoords = this.elements.coordinates.textContent;
     
     document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -57,7 +54,6 @@ class SelectionWindow {
       }
     });
     
-    // Восстанавливаем координаты
     this.elements.coordinates.textContent = currentCoords;
   }
 
@@ -66,7 +62,6 @@ class SelectionWindow {
   }
 }
 
-// Initialize the selection window when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   new SelectionWindow();
 });
