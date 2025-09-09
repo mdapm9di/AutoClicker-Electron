@@ -1,4 +1,4 @@
-# auto-clicker-electron
+# AutoClicker-Electron
 A feature-rich automated clicking utility built with Electron. Offers precise control over clicking behavior with customizable intervals, multiple click types, and flexible positioning options.
 
 ![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshots.jpg)
