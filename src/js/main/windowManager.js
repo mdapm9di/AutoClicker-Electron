@@ -5,8 +5,8 @@ const fs = require('fs');
 class WindowManager {
   createMainWindow(theme) {
     const mainWindow = new BrowserWindow({
-      width: 450,
-      height: 525,
+      width: 615,
+      height: 460,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false

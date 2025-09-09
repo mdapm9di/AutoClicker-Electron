@@ -9,6 +9,7 @@
 <body>
     <div class="container"> 
         <div class="content">
+            <!-- Блок №1: Верхняя панель -->
             <div class="top-bar">
                 <div class="language-selector">
                     <select id="languageSelect">
@@ -30,15 +31,9 @@
 
             <div class="divider"></div>
 
+            <!-- Блок №2: Click interval -->
             <div class="form-group">
-                <label for="hotkey" data-i18n="hotkey">Hotkey:</label>
-                <input type="text" id="hotkey" placeholder="Press any key..." readonly value="F6">
-            </div>
-            
-            <div class="divider"></div>
-
-            <div class="form-group">
-                <label data-i18n="click_interval">Click interval:</label>
+                <label class="section-title" data-i18n="click_interval">Click interval:</label>
                 <div class="interval-inputs">
                     <div class="interval-input">
                         <label for="hours" data-i18n="hours">Hours</label>
@@ -61,51 +56,91 @@
             
             <div class="divider"></div>
 
-            <div class="dropdowns-row">
-                <div class="form-group compact-select">
-                    <label for="button" data-i18n="mouse_button">Mouse button:</label>
-                    <select id="button">
-                        <option value="left" data-i18n="left">Left</option>
-                        <option value="right" data-i18n="right">Right</option>
-                        <option value="middle" data-i18n="middle">Middle</option>
-                    </select>
+            <!-- Блок №3: Три колонки с настройками -->
+            <div class="options-container">
+                <!-- Колонка 1: Click options -->
+                <div class="option-column">
+                    <div class="section-title" data-i18n="click_options">Click options</div>
+                    
+                    <div class="form-group">
+                        <label for="hotkey" data-i18n="hotkey">Hotkey</label>
+                        <input type="text" id="hotkey" placeholder="Press any key..." readonly value="F6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="button" data-i18n="mouse_button">Mouse button</label>
+                        <select id="button">
+                            <option value="left" data-i18n="left">Left</option>
+                            <option value="right" data-i18n="right">Right</option>
+                            <option value="middle" data-i18n="middle">Middle</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clickType" data-i18n="click_type">Click type</label>
+                        <select id="clickType">
+                            <option value="single" data-i18n="single">Single</option>
+                            <option value="double" data-i18n="double">Double</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div class="form-group compact-select">
-                    <label for="clickType" data-i18n="click_type">Click type:</label>
-                    <select id="clickType">
-                        <option value="single" data-i18n="single">Single</option>
-                        <option value="double" data-i18n="double">Double</option>
-                    </select>
+                <!-- Колонка 2: Position type -->
+                <div class="option-column">
+                    <div class="section-title" data-i18n="position_type">Position type</div>
+                    
+                    <div class="form-group">
+                        <label for="mode" data-i18n="cursor_position">Cursor position</label>
+                        <select id="mode">
+                            <option value="current_position" data-i18n="current">Current</option>
+                            <option value="custom_location" data-i18n="custom">Custom</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-i18n="select_position">Select position</label>
+                        <button id="selectPositionBtn" data-i18n="select">Select</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-i18n="coordinates">Coordinates</label>
+                        <div class="coordinates-display" id="coordinatesDisplay" data-i18n="not_used">
+                            Not used
+                        </div>
+                    </div>
                 </div>
-
-                <div class="form-group compact-select">
-                    <label for="mode" data-i18n="position_type">Position type:</label>
-                    <select id="mode">
-                        <option value="current_position" data-i18n="current">Current</option>
-                        <option value="custom_location" data-i18n="custom">Custom</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-
-            <div class="position-row compact" id="positionRow">
-                <div class="form-group">
-                    <button id="selectPositionBtn" data-i18n="select_position">Select position</button>
-                </div>
-                <div class="form-group">
-                    <div class="coordinates-display" id="coordinatesDisplay" data-i18n="not_used">
-                        Not used
+                
+                <!-- Колонка 3: Repeat option -->
+                <div class="option-column">
+                    <div class="section-title" data-i18n="repeat_option">Repeat option:</div>
+                    
+                    <div class="form-group">
+                        <label for="repeatOption" data-i18n="click_repeat">Click repeat</label>
+                        <select id="repeatOption">
+                            <option value="until_stopped" data-i18n="repeat_until_stopped">Repeat until stopped</option>
+                            <option value="repeat_for_time" data-i18n="repeat_for_time">Repeat for time</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label data-i18n="duration_seconds">Duration (seconds)</label>
+                        <div class="times-display-container">
+                            <input type="number" id="repeatDuration" min="1" class="times-input">
+                            <div class="times-display" id="timesDisplay" data-i18n="not_used">
+                                Not used
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="divider"></div>
 
-            <button id="toggleBtn" class="toggle-btn" data-i18n="enable">Enable</button>
-            
-            <div id="status" class="status disabled" data-i18n="disabled">Disabled</div>
+            <!-- Блок №4: Кнопка включения и статус -->
+            <div class="toggle-row">
+                <button id="toggleBtn" class="toggle-btn" data-i18n="enable">Enable</button>
+                <div id="status" class="status disabled" data-i18n="disabled">Disabled</div>
+            </div>
         </div>
     </div>
 

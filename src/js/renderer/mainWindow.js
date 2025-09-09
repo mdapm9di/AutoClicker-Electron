@@ -14,6 +14,9 @@ class MainWindow {
       mode: 'current_position',
       customX: 0,
       customY: 0,
+      repeatOption: 'until_stopped',
+      repeatDuration: 60, // Новое поле
+      times: 1,
       enabled: false
     };
     
@@ -38,10 +41,13 @@ class MainWindow {
       toggleBtn: document.getElementById('toggleBtn'),
       statusDiv: document.getElementById('status'),
       languageSelect: document.getElementById('languageSelect'),
-      positionRow: document.getElementById('positionRow'),
       themeButton: document.getElementById('themeButton'),
       themeIcon: document.getElementById('themeIcon'),
-      githubButton: document.getElementById('githubButton')
+      githubButton: document.getElementById('githubButton'),
+      repeatOptionSelect: document.getElementById('repeatOption'),
+      repeatDurationInput: document.getElementById('repeatDuration'), // Новый элемент
+      timesDisplay: document.getElementById('timesDisplay'),
+      timesDisplayContainer: document.querySelector('.times-display-container')
     };
   }
 
@@ -69,6 +75,11 @@ class MainWindow {
       ipcRenderer.send('start-position-selection');
     });
     
+    this.elements.repeatOptionSelect.addEventListener('change', () => {
+      this.updateRepeatOptionVisibility();
+      this.updateSettings();
+    });
+    
     ['change', 'input', 'blur'].forEach(eventType => {
       [
         this.elements.hoursInput,
@@ -77,7 +88,9 @@ class MainWindow {
         this.elements.millisecondsInput,
         this.elements.buttonSelect,
         this.elements.clickTypeSelect,
-        this.elements.modeSelect
+        this.elements.modeSelect,
+        this.elements.repeatOptionSelect,
+        this.elements.repeatDurationInput // Новый элемент
       ].forEach(element => {
         element.addEventListener(eventType, () => this.updateSettings());
       });
@@ -99,7 +112,7 @@ class MainWindow {
     ipcRenderer.on('settings-loaded', (event, savedSettings) => this.loadSettings(savedSettings));
     
     this.updatePositionVisibility();
-    ipcRenderer.send('get-initial-settings');
+    this.updateRepeatOptionVisibility();
   }
 
   handleHotkeyInput() {
@@ -142,6 +155,9 @@ class MainWindow {
     this.settings.button = this.elements.buttonSelect.value;
     this.settings.clickType = this.elements.clickTypeSelect.value;
     this.settings.mode = this.elements.modeSelect.value;
+    this.settings.repeatOption = this.elements.repeatOptionSelect.value;
+    this.settings.repeatDuration = parseInt(this.elements.repeatDurationInput.value) || 60; // Новое поле
+    this.settings.times = 1;
     
     ipcRenderer.send('update-settings', this.settings);
   }
@@ -196,10 +212,13 @@ class MainWindow {
   }
 
   updatePositionVisibility() {
-    if (this.elements.modeSelect.value === 'custom_location') {
-      this.elements.positionRow.classList.remove('compact');
-      this.elements.selectPositionBtn.disabled = false;
-      // Сохраняем текущие координаты перед обновлением переводов
+    const isCustomPosition = this.elements.modeSelect.value === 'custom_location';
+    
+    // Обновляем состояние кнопки выбора позиции
+    this.elements.selectPositionBtn.disabled = !isCustomPosition;
+    
+    // Обновляем отображение координат
+    if (isCustomPosition) {
       const currentCoords = this.elements.coordinatesDisplay.textContent;
       if (currentCoords !== 'Not used' && currentCoords !== 'Не используется' && 
           currentCoords !== 'Coordinates not selected' && currentCoords !== 'Координаты не выбраны') {
@@ -211,8 +230,6 @@ class MainWindow {
         this.elements.coordinatesDisplay.textContent = window.translations.coordinates_not_selected;
       }
     } else {
-      this.elements.positionRow.classList.add('compact');
-      this.elements.selectPositionBtn.disabled = true;
       this.elements.coordinatesDisplay.setAttribute('data-i18n', 'not_used');
       if (window.translations && window.translations.not_used) {
         this.elements.coordinatesDisplay.textContent = window.translations.not_used;
@@ -220,7 +237,22 @@ class MainWindow {
     }
   }
 
-  updateThemeIcon() {
+  updateRepeatOptionVisibility() {
+    const isTimeOption = this.elements.repeatOptionSelect.value === 'repeat_for_time';
+    
+    if (isTimeOption) {
+      this.elements.timesDisplayContainer.classList.remove('disabled');
+      this.elements.repeatDurationInput.value = this.settings.repeatDuration || 60;
+    } else {
+      this.elements.timesDisplayContainer.classList.add('disabled');
+      this.elements.timesDisplay.setAttribute('data-i18n', 'not_used');
+      if (window.translations && window.translations.not_used) {
+        this.elements.timesDisplay.textContent = window.translations.not_used;
+      }
+    }
+  }
+
+    updateThemeIcon() {
     if (this.currentTheme === 'dark') {
       this.elements.themeIcon.innerHTML = '<path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>';
     } else {
@@ -253,9 +285,14 @@ class MainWindow {
                            currentCoords !== 'Coordinates not selected' && 
                            currentCoords !== 'Координаты не выбраны';
     
+    // Сохраняем текущее значение Duration
+    const currentDuration = this.elements.repeatDurationInput.value;
+    const hasCustomDuration = currentDuration !== '60' && currentDuration !== 'Not used' && 
+                             currentDuration !== 'Не используется';
+    
     document.querySelectorAll('[data-i18n]').forEach(element => {
       const key = element.getAttribute('data-i18n');
-      if (translations[key] && element !== this.elements.coordinatesDisplay) {
+      if (translations[key] && element !== this.elements.coordinatesDisplay && element !== this.elements.timesDisplay) {
         element.textContent = translations[key];
       }
     });
@@ -272,8 +309,16 @@ class MainWindow {
       this.elements.coordinatesDisplay.textContent = currentCoords;
     }
     
+    // Восстанавливаем значение Duration если оно было установлено
+    if (hasCustomDuration) {
+      this.elements.repeatDurationInput.value = currentDuration;
+    } else if (this.elements.repeatOptionSelect.value !== 'repeat_for_time') {
+      this.elements.timesDisplay.textContent = translations.not_used || 'Not used';
+    }
+    
     this.updateToggleButton();
     this.updatePositionVisibility();
+    this.updateRepeatOptionVisibility();
   }
 
   loadSettings(savedSettings) {
@@ -297,12 +342,15 @@ class MainWindow {
     this.elements.clickTypeSelect.value = this.settings.clickType;
     this.elements.modeSelect.value = this.settings.mode;
     this.elements.languageSelect.value = this.settings.language;
+    this.elements.repeatOptionSelect.value = this.settings.repeatOption || 'until_stopped';
+    this.elements.repeatDurationInput.value = this.settings.repeatDuration || 60; // Новое поле
     
     if (this.settings.mode === 'custom_location' && this.settings.customX !== 0 && this.settings.customY !== 0) {
       this.elements.coordinatesDisplay.textContent = `X: ${this.settings.customX}, Y: ${this.settings.customY}`;
     }
     
     this.updatePositionVisibility();
+    this.updateRepeatOptionVisibility();
     this.updateThemeIcon();
     this.applyTheme(this.currentTheme);
     

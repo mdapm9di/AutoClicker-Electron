@@ -29,6 +29,12 @@ app.whenReady().then(() => {
   // Создание главного окна
   mainWindow = windowManager.createMainWindow(settingsManager.get('theme'));
   
+  // Установка обработчика автоматической остановки
+  clickerManager.onAutoStop(() => {
+    settingsManager.set('enabled', false);
+    mainWindow.webContents.send('clicker-toggled', false);
+  });
+  
   // Обработка событий IPC
   setupIpcHandlers();
   

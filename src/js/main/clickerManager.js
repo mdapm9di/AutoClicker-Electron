@@ -1,10 +1,12 @@
-const { globalShortcut } = require('electron');
+const { globalShortcut, ipcMain } = require('electron');
 
 class ClickerManager {
   constructor(robot) {
     this.robot = robot;
     this.clickInterval = null;
+    this.stopTimer = null;
     this.currentHotkey = null;
+    this.onAutoStopCallback = null;
   }
 
   start(settings) {
@@ -34,12 +36,27 @@ class ClickerManager {
         }, 10);
       }
     }, settings.interval);
+
+    // Добавляем таймер для автоматической остановки
+    if (settings.repeatOption === 'repeat_for_time') {
+      this.stopTimer = setTimeout(() => {
+        this.stop();
+        if (this.onAutoStopCallback) {
+          this.onAutoStopCallback();
+        }
+      }, settings.repeatDuration * 1000);
+    }
   }
 
   stop() {
     if (this.clickInterval !== null) {
       clearInterval(this.clickInterval);
       this.clickInterval = null;
+    }
+    
+    if (this.stopTimer !== null) {
+      clearTimeout(this.stopTimer);
+      this.stopTimer = null;
     }
   }
 
@@ -75,6 +92,10 @@ class ClickerManager {
     } catch (error) {
       console.error('Error registering hotkey:', error);
     }
+  }
+
+  onAutoStop(callback) {
+    this.onAutoStopCallback = callback;
   }
 }
 

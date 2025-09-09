@@ -13,6 +13,9 @@ class SettingsManager {
       mode: 'current_position',
       customX: 0,
       customY: 0,
+      repeatOption: 'until_stopped',
+      repeatDuration: 60, // Новое поле: длительность в секундах
+      times: 1,
       enabled: false
     };
     
