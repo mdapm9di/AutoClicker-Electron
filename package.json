@@ -1,7 +1,7 @@
 {
-  "name": "auto-clicker-electron",
+  "name": "auto-clicker",
   "version": "1.0.4",
-  "description": "Auto-clicker application built with Electron",
+  "description": "A full-fledged autoclicker with two modes of autoclicking, at your dynamic cursor location or at a prespecified location. Hotkeys work in the background for convenience. ",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -12,8 +12,7 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [
-    "auto-clicker-electron",
-    "electron"
+    "AutoClicker"
   ],
   "author": "mdapm9di",
   "license": "MIT",
@@ -25,7 +24,7 @@
     "@jitsi/robotjs": "^0.6.9"
   },
   "build": {
-    "productName": "auto-clicker-electron",
+    "productName": "AutoClicker",
     "directories": {
       "output": "dist"
     },
