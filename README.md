@@ -1,7 +1,7 @@
 # auto-clicker-electron
 A feature-rich automated clicking utility built with Electron. Offers precise control over clicking behavior with customizable intervals, multiple click types, and flexible positioning options.
 
-![screenshot]()
+![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/screenshot.jpg)
 
 ## Appeal to all
 This app is a personal project that I am creating for myself. I would be happy if it was useful to someone else, and I am always open to suggestions on how to improve it. Any help and constructive criticism is most welcome
