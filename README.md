@@ -67,17 +67,17 @@ Built applications will be available in the `dist` folder.
 9. **Enable/Disable**: Toggle auto-clicker with button or configured hotkey
 ## Project Structure
 ```
-├── main.js                     # Main Electron process
-├── index.html                  # Main window UI
-├── selection.html              # Position selection window
+├── main.js                    
+├── index.html                 
+├── selection.html             
 ├── src/
 │   ├── js/
-│   │   ├── main/               # Main process modules
+│   │   ├── main/               
 │   │   │   ├── settingsManager.js
 │   │   │   ├── translationManager.js
 │   │   │   ├── clickerManager.js
 │   │   │   └── windowManager.js
-│   │   └── renderer/           # Renderer process modules
+│   │   └── renderer/         
 │   │       ├── mainWindow.js
 │   │       └── selectionWindow.js
 │   ├── styles/
@@ -86,7 +86,7 @@ Built applications will be available in the `dist` folder.
 │   └── locales/
 │       ├── en.json
 │       └── ru.json
-├── assets/                     # Application icons
+├── assets/                    
 └── package.json
 ```
 ## Settings Persistence
