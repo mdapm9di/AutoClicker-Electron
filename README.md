@@ -1,7 +1,7 @@
 # AutoClicker
-![README-ru.md](https://github.com/mdapm9di/AutoClicker-Electron/blob/main/README-ru.md)
+![README-ru.md](https://github.com/mdapm9di/AutoClicker/blob/main/README-ru.md)
 
-![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/preview.jpg)
+![screenshot](https://github.com/mdapm9di/AutoClicker/blob/main/preview.jpg)
 
 ## Appeal to all
 This app is a personal project that I am creating for myself. I would be happy if it was useful to someone else, and I am always open to suggestions on how to improve it. Any help and constructive criticism is most welcome
@@ -89,9 +89,9 @@ Built applications will be available in the `dist` folder.
 ```
 ## Settings Persistence
 The application automatically saves your settings to config.json in the user data directory:
-- Windows: `%APPDATA%/auto-clicker-electron/data/config.json`
-- macOS: `~/Library/Application Support/auto-clicker-electron/data/config.json`
-- Linux: `~/.config/auto-clicker-electron/data/config.json`
+- Windows: `%APPDATA%/AutoClicker/data/config.json`
+- macOS: `~/Library/Application Support/AutoClicker/data/config.json`
+- Linux: `~/.config/AutoClicker/data/config.json`
 ## Troubleshooting
 ### Common Issues
 1. **RobotJS Installation Error**:
@@ -111,31 +111,31 @@ The application automatically saves your settings to config.json in the user dat
 MIT License - see LICENSE file for details
 ## Changelog
 ### v1.0.4
-**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.4
+**Full Changelog**: https://github.com/mdapm9di/AutoClicker/commits/1.0.4
 - Added repeat duration option with time-based auto-stop
 - Enhanced UI for repeat options with better visual feedback
 - Improved settings management for new duration field
 - Updated translation files for new features
 ### v1.0.3
-**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.3
+**Full Changelog**: https://github.com/mdapm9di/AutoClicker/commits/1.0.3
 - Code refactoring: modular architecture for better maintainability
 - Improved settings and translation management
 - Optimized window creation and management
 ### v1.0.2
-**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.2
+**Full Changelog**: https://github.com/mdapm9di/AutoClicker/commits/1.0.2
 - Added theme switching (light/dark)
 - Improved settings saving with debouncing
 - Updated to @jitsi/robotjs for better compatibility
 - Enhanced UI with theme awareness
 - Improved error handling and file path resolution
 ### v1.0.1
-**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.1
+**Full Changelog**: https://github.com/mdapm9di/AutoClicker/commits/1.0.1
 - Added settings persistence
 - Enhanced error handling
 - Improved multi-language support
 - Various bug fixes
 ### v1.0.0
-**Full Changelog**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.0
+**Full Changelog**: https://github.com/mdapm9di/AutoClicker/commits/1.0.0
 - Initial release
 - Basic auto-clicker functionality
 - Multi-language interface
