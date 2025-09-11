@@ -1,7 +1,7 @@
-# AutoClicker-Electron
-![README-en.md](https://github.com/mdapm9di/AutoClicker-Electron)
+# AutoClicker
+![README-en.md](https://github.com/mdapm9di/AutoClicker)
 
-![скриншот](https://github.com/mdapm9di/auto-clicker-electron/blob/main/preview.jpg)
+![скриншот](https://github.com/mdapm9di/AutoClicker/blob/main/preview.jpg)
 
 ## Обращение ко всем
 Это приложение — личный проект, который я создаю для себя. Я буду рад, если он окажется полезным кому-то ещё, и я всегда открыт для предложений по его улучшению. Любая помощь и конструктивная критика приветствуются.
@@ -89,9 +89,9 @@ npm run build
 ```
 ## Сохранение настроек
 Приложение автоматически сохраняет ваши настройки в файл `config.json` в директории данных пользователя:
-- Windows: `%APPDATA%/auto-clicker-electron/data/config.json`
-- macOS: `~/Library/Application Support/auto-clicker-electron/data/config.json`
-- Linux: `~/.config/auto-clicker-electron/data/config.json`
+- Windows: `%APPDATA%/AutoClicker/data/config.json`
+- macOS: `~/Library/Application Support/AutoClicker/data/config.json`
+- Linux: `~/.config/AutoClicker/data/config.json`
 ## Решение проблем
 ### Распространённые проблемы
 1.  **Ошибка установки RobotJS**:
@@ -111,31 +111,31 @@ npm run build
 Лицензия MIT — подробности см. в файле LICENSE.
 ## История изменений
 ### v1.0.4
-**Полная история изменений**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.4
+**Полная история изменений**: https://github.com/mdapm9di/AutoClicker/commits/1.0.4
 - Добавлена опция длительности повтора с автоматической остановкой по времени.
 - Улучшен UI для опций повтора с лучшей визуальной обратной связью.
 - Улучшено управление настройками для нового поля длительности.
 - Обновлены файлы переводов для новых функций.
 ### v1.0.3
-**Полная история изменений**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.3
+**Полная история изменений**: https://github.com/mdapm9di/AutoClicker/commits/1.0.3
 - Рефакторинг кода: модульная архитектура для лучшей сопровождаемости.
 - Улучшено управление настройками и переводами.
 - Оптимизировано создание и управление окнами.
 ### v1.0.2
-**Полная история изменений**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.2
+**Полная история изменений**: https://github.com/mdapm9di/AutoClicker/commits/1.0.2
 - Добавлено переключение тем (светлая/тёмная).
 - Улучшено сохранение настроек с дебаунсингом.
 - Обновлено до @jitsi/robotjs для лучшей совместимости.
 - Улучшен UI с учётом темы.
 - Улучшена обработка ошибок и разрешение путей к файлам.
 ### v1.0.1
-**Полная история изменений**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.1
+**Полная история изменений**: https://github.com/mdapm9di/AutoClicker/commits/1.0.1
 - Добавлено сохранение настроек.
 - Улучшена обработка ошибок.
 - Улучшена поддержка нескольких языков.
 - Различные исправления ошибок.
 ### v1.0.0
-**Полная история изменений**: https://github.com/mdapm9di/auto-clicker-electron/commits/1.0.0
+**Полная история изменений**: https://github.com/mdapm9di/AutoClicker/commits/1.0.0
 - Первый релиз.
 - Базовая функциональность авто-кликера.
 - Многоязычный интерфейс.
