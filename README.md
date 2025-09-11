@@ -5,6 +5,11 @@
 
 ## Appeal to all
 This app is a personal project that I am creating for myself. I would be happy if it was useful to someone else, and I am always open to suggestions on how to improve it. Any help and constructive criticism is most welcome
+
+## Technology Stack
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript, Electron Renderer Process
+- **Backend**: Node.js, Electron Main Process, RobotJS for input simulation
+
 ## Features
 - Customizable hotkey (default: F6)
 - Adjustable click intervals (hours, minutes, seconds, milliseconds)
