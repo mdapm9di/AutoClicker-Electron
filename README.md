@@ -1,4 +1,4 @@
-# AutoClicker-Electron
+# AutoClicker
 ![README-ru.md](https://github.com/mdapm9di/AutoClicker-Electron/blob/main/README-ru.md)
 
 ![screenshot](https://github.com/mdapm9di/auto-clicker-electron/blob/main/preview.jpg)
